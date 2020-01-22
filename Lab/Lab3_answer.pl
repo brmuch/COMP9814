@@ -29,7 +29,7 @@ compress([H1, H2|T], [H1|R]) :- compress([H2|T], R).
 pack([], []) :- !.
 pack([X], [[X]]) :- !.
 pack([H1, H2|T], [H3|T1]) :- H1 = H2, pack([H2|T], [H|T1]), conc([H1], H, H3), !.
-pack([H1, H2|T], R1) :- H1 \= H2, pack([H2|T], R), conc([[H1]], R, R1).
+pack([H1, H2|T], R1) :- pack([H2|T], R), conc([[H1]], R, R1).
 
 % question 5 : Duplicate	the	elements	of	a	list.	
 dupli([], []).
@@ -46,7 +46,7 @@ sum([H|T], R1) :- sum(T, R), R1 is R + H.
 
 % question 8 :  Check	whether	a	given	term	represents	a	binary	tree	
 istree(nil).
-istree(t(_, X, Y)) :- istree(X), istree(Y).
+istree(t(R, X, Y)) :- istree(X), istree(Y), \+ istree(R).
 
 % question 9 : Count	the	leaves	of	a	binary	tree
 count_leaves(nil, 0) :- !.
@@ -58,7 +58,7 @@ count_all_nodes(nil, 0).
 count_all_nodes(t(_, L, R), N) :- count_all_nodes(L, NL), count_all_nodes(R, NR), N is NR + NL + 1.
 internals(T,S) :- count_leaves(T, NL), count_all_nodes(T, NA), S is NA - NL.
 
-% question 11 : 11.	Write	in	prolog	programs	for	the	set	operations	like	union,	intersection	and	difference.
+% question 11 ：	Write	in	prolog	programs	for	the	set	operations	like	union,	intersection	and	difference.
 % union(S1,	S2,	U).	U	is	union	of	the	sets	S1	and	S2.
 union(S1, S2, U) :- conc(S1, S2, Temp), remove_duplicates(Temp, U).
     
