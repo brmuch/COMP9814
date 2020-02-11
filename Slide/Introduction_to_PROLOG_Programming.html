@@ -1,0 +1,1873 @@
+<html><head><title>Introduction to Prolog</title>
+<link type="text/css" rel="stylesheet" href="notes.css">
+</head>
+<body bgcolor="#ffffff">
+
+<hr>
+<!-- INDEX INTRODUCTION TO PROLOG -->
+<h1 align="center">COMP3411/9814 Artificial Intelligence</h1>
+<h1 align="center">INTRODUCTION TO PROLOG PROGRAMMING</h1>
+<table border=1 cellspacing=0 cellpadding=0 style='border-collapse:collapse;
+ border:none'>
+<tr>
+<td valign=top style='border:solid windowtext 1pt; padding:0cm'>
+    <b>Reference:</b>
+<td valign=top style='border:solid windowtext 1pt; padding:0cm'>
+Bratko, I., <i>Programming in Prolog for Artificial Intelligence</i>,
+4th Edition, Addison-Wesley, 2011, chapters 1-5</b>
+</tr>
+<tr>
+<td valign=top style='border:solid windowtext 1pt; padding:0cm'>
+<b>Aim:</b>
+<td valign=top style='border:solid windowtext 1pt; padding:0cm'>
+To introduce enough of Prolog to allow
+students to do the assignment work in this course,
+thereby gaining some experience of AI programming.
+</tr>
+<tr>
+<td valign=top style='border:solid windowtext 1pt; padding:0cm'>
+<b>Plan:</b>
+<td valign=top style='border:solid windowtext 1pt; padding:0cm'>
+<ul>
+<li> <a href="#whatis">What is Prolog? Programming with relations.</a>
+<li> <a href="#facts">Facts</a>
+<li> <a href="#questions">Questions</a>
+<li> <a href="#variables">Variables</a>
+<li> <a href="#conjunctions">Conjunctions of goals</a>, <a href="#backtracking">backtracking</a>
+<li> <a href="#rules">Rules</a>
+<li> <a href="#structures">Structures</a>
+<li> <a href="#recursion">Recursive programs</a>
+<li> <a href="#lists">Lists</a>
+<li> <a href="#cut">Controlling execution - the cut</a>
+</ul></tr>
+</table><p>
+
+<hr>
+<!-- INDEX What is Prolog? -->
+
+<a name="whatis">
+<h3>What is Prolog?</h3>
+
+<table border=1>
+<tr><td>
+<ul>
+<li>	invented early seventies by Alain Colmerauer in France and Robert Kowalski in Britain. (There is a 2-page article by Kowalski <a target=_blank href="./MITEncy.pdf">here</a>).
+<font color=red>Note that historical information in these lectures is not examinable.</font>
+<li>	Prolog = Programmation en Logique (Programming in Logic).
+<li>	Prolog is a declarative programming language<br>
+	unlike most common programming languages.
+<li>	In a declarative language
+	<ul>
+	<li> the programmer specifies a goal to be achieved
+	<li> the Prolog system works out how to achieve it
+	</ul>
+<li>	relational databases owe something to Prolog
+</ul>
+<td align="center">
+<p>
+<!-- <img width=100 src="./AlainColmerauer.jpg"> -->
+
+</p>
+<p>
+Alain Colmerauer
+</p>
+<td align="center">
+<p>
+<!-- <img width=100 src="./RobertKowalski.jpg">  -->
+</p>
+<p>
+Robert Kowalski
+</p>
+</tr>
+</table>
+
+<hr>
+<!-- INDEX What is Prolog 2? -->
+<h3>What is Prolog? (continued)</h3>
+
+<ul>
+<li>	traditional programming languages are said to be <b>procedural</b>
+<li>	procedural programmer must specify in detail how to solve a problem:
+
+
+<blockquote>
+mix ingredients;<br>
+beat until smooth;<br>
+bake for 20 minutes in a moderate oven;<br>
+remove tin from oven;<br>
+put on bench;<br>
+close oven;<br>
+turn off oven;
+</blockquote>
+
+<li>	in purely declarative languages, the programmer only states what the problem is and leaves the rest to the language system
+<li> We'll see specific, simple examples of cases where Prolog fits really well shortly
+</ul>
+
+<hr>
+<!-- INDEX Applications of Prolog -->
+<h3>Applications of Prolog</h3>
+
+<p>
+Some applications of Prolog are:
+<ul>
+<li> intelligent data base retrieval
+<li> natural language understanding
+<li> expert systems
+<li> specification language
+<li> machine learning
+<li> robot planning
+<li> automated reasoning
+<li> problem solving
+</ul>
+</p>
+
+<hr>
+<!-- INDEX Relations -->
+<h2 align="center"><font color=brown><font size=+2>The Prolog Language</font></font></h2>
+<table align="center" border=1>
+<tr><td width="20%" valign="top"><p><b>Reference:</b></p>
+    <td width="30%" valign="top" align="center"><p>Bratko, Chapter 1</p>
+<!--<p> <img src="Bratko-ed4-2011.jpg" alt="Picture of Cover of Bratko's book"></p> -->
+    <td width="40%" align="center">
+   <!--   <p> <img src="bratko.jpg" alt="Picture of Ivan Bratko"></p>  -->
+     <p><a target=_blank href="http://www.ailab.si/ivan/">Ivan Bratko</a></p>
+</tr>
+</table>
+
+<h3>Relations</h3>
+<ul>
+<p>
+<li>Prolog programs specify <i>relationships</i> among objects
+    and properties of objects.</p>
+
+<p><li>When we say, "John owns the book", we are declaring the
+    ownership relationship between two objects: John and the book.</p>
+
+<p><li>When we ask, "Does John own the book?" we are trying to
+find out about a relationship.</p>
+
+<p><li>Relationships can also rules such as:
+<blockquote>
+Two people are sisters <b>if</b>
+	<blockquote>
+	they are both female <b>and</b><br>
+	they have the same parents.
+	</blockquote>
+</blockquote>
+</p>
+
+<p><li> A rule allows us to find out about a relationship even if the
+   relationship isn't explicitly stated as a fact.</p>
+</ul>
+<hr>
+<!-- INDEX Relations continued -->
+<h3>A little more on being sisters</h3>
+<ul>
+<li> As usual in programming, you need to be a bit careful how you phrase things:
+<li> The following would be better:
+<blockquote> A and B are sisters <b>if</b>
+	<blockquote>
+        A and B are both female <b>and</b><br>
+        they have the same father <b>and</b><br>
+	they have the same mother <b>and</b><br>
+        A is not the same as B
+	</blockquote>
+</blockquote>
+</ul>
+
+<hr>
+<!-- INDEX Programming in Prolog -->
+<h3>Programming in Prolog</h3>
+
+<ul>
+<p><li>	declare facts describing explicit relationships between
+        objects and properties objects might have (e.g. Mary likes pizza,
+        grass has_colour green, Fido is_a_dog, Mizuki taught Paul Japanese )</p>
+
+<p><li>	define rules defining implicit relationships between objects
+        (e.g. the sister rule above)
+        and/or rules defining implicit object properties
+        (e.g. X is a parent if there is a Y such that Y is a child of X).</p>
+</ul>
+</p>
+
+<p>One then uses the system by:
+<ul>
+<li>	asking questions above relationships between objects, and/or
+        about object properties (e.g. does Mary like pizza? is Joe
+        a parent?)
+</ul>
+</p>
+
+<a name="facts">
+<hr>
+<!-- INDEX Facts -->
+<h3>Facts</h3>
+
+<ul>
+<p><li> Properties of objects, <i>or</i> relationships between objects;</p>
+<p><li> "Dr Turing lectures in course 9020", is written in Prolog as:
+<pre>
+	lectures(turing, 9020).
+</pre></p>
+
+
+<p><li><i>Notice that:</i>
+   <ul>
+   <li>names of properties/relationships begin with lower case letters.
+   <li>the relationship name appears as the first term
+   <li>objects appear as comma-separated arguments within parentheses.
+   <li>A period "." must end a fact.
+   <li>objects also begin with lower case letters. They also can begin
+       with digits (like 9020), and can be strings of characters enclosed
+       in quotes (as in <code>reads(fred, "War and Peace")</code>).
+    </ul></p>
+
+<p><li><code>lectures(turing, 9020).</code> is also called a <i>predicate</i>
+</ul>
+
+<hr>
+<!-- INDEX Facts 2 -->
+<p>Facts about a hypothetical computer science department:
+<pre>
+        % lectures(X, Y): person X lectures in course Y
+	lectures(<a href="http://en.wikipedia.org/wiki/Alan_Turing">turing</a>, 9020).
+	lectures(<a href="http://en.wikipedia.org/wiki/Edgar_F._Codd">codd</a>, 9311).
+	lectures(<a href="http://en.wikipedia.org/wiki/John_Backus">backus</a>, 9021).
+	lectures(<a href="http://en.wikipedia.org/wiki/Dennis_Ritchie">ritchie</a>, 9201).
+	lectures(<a href="http://en.wikipedia.org/wiki/Marvin_Minsky">minsky</a>, 9414).
+	lectures(codd, 9314).
+
+        % studies(X, Y): person X studies in course Y
+	studies(fred, 9020).
+	studies(jack, 9311).
+	studies(jill, 9314).
+	studies(jill, 9414).
+	studies(henry, 9414).
+	studies(henry, 9314).
+
+        %year(X, Y): person X is in year Y
+	year(fred, 1).
+	year(jack, 2).
+	year(jill, 2).
+	year(henry, 4).
+</pre>
+</p>
+
+<p>Together, these facts form Prolog's <i>database</i>.
+Should you wish to experiment with them using Prolog, they are
+available as
+<a href="./facts03.txt">facts03.txt</a>.
+
+<a name="questions">
+<hr>
+<!-- INDEX Queries -->
+<h3>Queries</h3>
+
+<ul>
+<p><li>Once we have a database of facts (and, soon, rules) we can
+       ask questions about the stored information.</p>
+
+<p><li>Suppose we want to know if Turing lectures in course 9020. We can ask:
+<table border=1>
+<tr>
+<td>
+<pre>
+% <b>prolog -s facts03</b>
+(multi-line welcome message)
+?- <i>lectures(turing, 9020).</i>
+true.
+?- <i>&lt;control-D&gt;</i>
+%</pre>
+</td>
+<td valign="top">
+<pre>
+
+facts03 loaded into Prolog
+"?-" is Prolog's prompt
+output from Prolog
+hold down control &amp; press D
+to leave Prolog</pre>
+</td>
+</tr>
+</table>
+</p>
+
+<p><li><i>Notice that:</i>
+ <ul>
+ <p><li> In SWI Prolog, queries are terminated by a full stop.</p>
+ <p><li> To answer this query, Prolog consults its database to see if
+         this is a known fact.</p>
+ <p><li> In example dialogues with Prolog, the text in
+         <code><i><font color=green>green italics</font></i></code> is what the user types.</p>
+ </ul>
+</ul>
+<hr>
+<!-- INDEX Another query -->
+<h3>Another example query</h3>
+
+<pre>
+?- <i><font color=green>lectures(codd, 9020).</font></i>
+false.
+</pre>
+</p>
+
+<ul>
+<p><li> if answer is <code>true.</code>, the query <i>succeeded</i>
+<p><li> if answer is <code>false.</code>, the query <i>failed</i>. Note: many early
+    versions of Prolog, including early versions of SWI-Prolog, say <code>No</code>
+    instead of <code>false.</code> See the article on
+     <a href="http://www.cse.unsw.edu.au/~billw/prologdict.html#negation">negation</a>
+     in the
+     <a href="http://www.cse.unsw.edu.au/~billw/prologdict.html">Prolog dictionary</a>
+     to find out why <code>No.</code> is a more accurate description of what is
+     happening.
+</p>
+<p><li> In the latest version of SWI Prolog, it no longer says "No." but says
+     "false." instead.
+</p>
+<p><li> The use of lower case for <code>codd</code> is critical.</p>
+
+<p><li> Prolog is not being intelligent about this - it would not
+        see a difference between this query and<br>
+	<code>lectures(fred, 9020).</code> or <code>lectures(xyzzy, 9020).</code><br>
+	though a person inspecting the database can see that <code>fred</code> is
+        a student, not a lecturer, and that <code>xyzzy</code> is neither student
+        nor lecturer.</p>
+</ul>
+
+<a name="variables">
+<hr>
+<!-- INDEX Variables -->
+<h3>Variables</h3>
+
+<ul>
+<p><li>Suppose we want to ask, "What course does Turing teach"?</p>
+<p><li>This could be written as:
+
+<pre>
+	Is there a course, X, that Turing teaches?
+</pre>
+</p>
+
+<p><li> The variable X stands for an object that the questioner
+does not know about yet.</p>
+
+<p><li> To answer the question, Prolog has to find out the value of X, if it exists.</p>
+
+<p><li>As long as we do not know the value of a variable it is said to be <i>unbound</i>.</p>
+<p><li>When a value is found, the variable is said to
+<i>bound</i> to that value.</p>
+<p><li>The name of a variable must
+begin with a capital letter or an underscore character, "_".
+</p>
+</ul>
+
+<hr>
+<!-- INDEX Variables 2 -->
+<h3>Variables 2</h3>
+
+<ul>
+<p><li> To ask Prolog to find the course that Turing teaches, enter this:
+<blockquote>
+	<code>?- <font color=green><i>lectures(turing, Course).</font></i><br>
+	Course = 9020</code>&nbsp;&nbsp;<font color=green>&larr;</font>
+                   output from Prolog
+</blockquote>
+</p>
+
+<p><li> To ask which course(s) Prof. Codd teaches, we may ask,
+<blockquote>
+	<code>?- <font color=green><i>lectures(codd , Course).</font></i><br>
+	Course = 9311 <i><font color=green>;</font></i></code>&nbsp;&nbsp;<font color=green>&larr;</font>
+              type "<code>;</code>" to get next solution<br>
+	<code>Course = 9314<br>
+        ?- </code>
+</blockquote>
+</p>
+<p>If Prolog can tell that there are no more solutions, it just
+gives you the <code>?- </code> prompt for a new query, as here.
+If Prolog can't tell, it will let you
+type <code><font color=green>;</font></code> again, and then if there
+is no further solution, report <code>false.</code>
+
+<p><li>Prolog can find all possible ways to answer a query, unless
+   you explicitly tell it not to (see <i>cut</i>, later).
+</p>
+</ul>
+
+<hr>
+<!-- INDEX Conjunctions of Goals in Queries -->
+<a name="conjunctions">
+<h3>Conjunctions of Goals in Queries</h3>
+
+<ul>
+<p><li>How do we ask, "Does Turing teach Fred"?</p>
+
+<p><li>This means finding out if Turing lectures in a course
+   that Fred studies.
+<pre>
+	?- <i><font color=green>lectures(turing, Course), studies(fred, Course)</font>.</i>
+</pre>
+</p>
+
+<p><li> i.e. "Turing lectures in course, <code>Course</code> <b>and</b> Fred studies
+(the same) <code>Course</code>".</p>
+
+<p><li>The question consists of two <i>goals</i>.</p>
+
+<p><li>To answer this question, Prolog must find a single value
+   for Course, that satisfies both goals.</p>
+<p><li>Read the comma, "<code>,</code>", as <b>and</b>.</p>
+<p><li>However, note that Prolog will evaluate the two goals left-to-right.
+       In pure logic, P1 &and; P2 is the same as P2 &and; P1. In Prolog,
+       there is the practical consideration of which goal should be
+       evaluated first - the code might be more efficient one way or the
+       other. In particular, in "P1, P2", if P1 fails, then P2 does not need
+       to be evaluated at all. This is sometimes referred to as a
+       "conditional-and".</p>
+</ul>
+
+<hr>
+<!-- INDEX Disjunctions of Goals in Queries -->
+<a name="disjunctions">
+<h3>Disjunctions of Goals in Queries</h3>
+<ul>
+<p><li>What about <b>or</b> (i.e. disjunction)?
+   It turns out explicit <b>or</b>s aren't needed much in Prolog</p>
+</ul>
+
+<p>
+There is a way to write <b>or</b>: ("<code>;</code>")
+<img align="left" src="poison_icon40.png" alt="danger danger">
+</p>
+<p>&nbsp;</p>
+
+<ul>
+<p><li>The reason <b>or</b>s aren't needed much is that<br>
+<pre>head :- body1.
+head :- body2.</pre>
+has the same effect as
+<pre>head :- body1 ; body2.</pre>
+</p>
+
+<p><li>Avoid using <code>;</code> if you can, at least until you
+   have learned how to manage without it. While some uses of <code>;</code>
+   are harmless, others can make your code hard to follow.</p>
+
+<p><li><font color=red>To reinforce this message, you will be
+   <b>penalised</b> if you use the <b>or</b> operator <code>;</code>
+   in the first (Prolog) assignment in COMP9414. This prohibition
+   means you can't use the <code>&hellip; -> &hellip; ; &hellip;</code>
+   construct either, in the first assignment.</font> The
+   <code>&hellip; -> &hellip; ; &hellip;</code> construct is not taught
+   in COMP9414, but in the past, some people have found out about it.
+</ul>
+
+<hr>
+<!-- INDEX Backtracking in Prolog -->
+<a name="backtracking">
+<h3>Backtracking in Prolog</h3>
+
+<ul>
+<p><li>Who does Codd teach?
+<pre>
+  ?- <i><font color=green>lectures(codd, Course), studies(Student, Course)</font>.</i>
+  Course = 9311
+  Student = jack <i><font color=green>;</font></i>
+
+  Course = 9314
+  Student = jill <i><font color=green>;</font></i>
+
+  Course = 9314
+  Student = henry <i><font color=green>;</font></i>
+</pre>
+</p>
+
+<p><li>Prolog solves this problem
+by proceeding left to right and then <i>backtracking</i>.</p>
+
+<p><li>When given the initial query, Prolog starts by trying
+to solve
+<pre>
+	lectures(codd, Course)
+</pre></p>
+
+<p><li> There are six <code>lectures</code> clauses, but only two have
+   <code>codd</code> as their first argument.</p>
+
+<p><li>Prolog uses the first clause that refers to
+<code>codd</code>: <code>lectures(codd, 9311).</code></p>
+
+<p><li>With  <code>Course = 9311</code>,  it tries to
+satisfy the next goal, <code>studies(Student, 9311)</code>.</p>
+
+<p><li>It finds the fact <code>studies(jack, 9311).</code> and
+hence the first solution: (<code>Course = 9311, Student = jack</code>)
+</ul>
+
+<hr>
+<!-- INDEX Backtracking in Prolog 2 -->
+<h3>Backtracking in Prolog 2</h3>
+
+<ul>
+<p><li>After the first solution
+   is found, Prolog retraces its steps up the tree and looks for
+alternative solutions.</p>
+
+<p><li>First it looks for other students studying <code>9311</code>
+   (but finds none).</p>
+
+<p><li>Then it
+   <ul>
+   <li> backs up
+   <li> rebinds <code>Course</code> to <code>9314</code>,
+   <li> goes down the <code>lectures(codd, 9314)</code> branch
+   <li> tries <code>studies(Student, 9314)</code>,
+   <li> finds the other two solutions:<br>
+	        (<code>Course = 9314, Student = jill</code>)<br> and
+	        (<code>Course = 9314, Student = henry</code>).
+   </ul></p>
+
+</ul>
+
+<hr>
+<!-- INDEX Backtracking in Prolog 3 -->
+<h3>Backtracking in Prolog 3 </h3>
+
+<p>To picture what happens when Prolog tries to find a
+    solution and backtracks, we draw a "proof tree":</p>
+
+<p>
+<IMG SRC="backtrack.gif">
+</p>
+
+
+
+<a name="rules">
+<hr>
+<!-- INDEX Rules -->
+<h3>Rules</h3>
+
+<ul>
+<p><li> The previous question can be restated as a general rule:
+<pre>
+	One person, Teacher, teaches another person, Student <b>if</b>
+		Teacher lectures in a course, Course <b>and</b>
+		Student studies Course.
+</pre></p>
+
+<p><li>In Prolog this is written as:
+<pre>
+	teaches(Teacher, Student) :-
+		lectures(Teacher, Course),
+		studies(Student, Course).
+
+        ?- <i>teaches(codd, Student).</i>
+</pre><p>
+
+<p><li>Facts are <i>unit clauses</i> and rules are <i>non-unit clauses</i>.</p>
+
+</ul>
+
+<a name="syntax">
+<hr>
+<!-- INDEX Clause Syntax -->
+<h3>Clause Syntax</h3>
+
+<ul>
+<p><li>":-" means "if" or "is implied by". Also called the <i>neck</i>  symbol.</p>
+<p><li>The left hand side of the neck is called the <i>head</i>.</p>
+<p><li>The right hand side of the neck is called the <i>body</i>.</p>
+<p><li>The comma, ",", separating the goals, stands for <i>and</i>.</p>
+<p><li>
+Another rule, using the <i>predefined predicate</i>  "&gt;".</p>
+<pre>
+	more_advanced(S1, S2) :-
+		year(S1, Year1),
+		year(S2, Year2),
+		Year1 &gt; Year2.
+</pre></p>
+</ul>
+
+<hr>
+<!-- INDEX Tracing Execution -->
+<h3>Tracing Execution</h3>
+<pre>
+	more_advanced(S1, S2) :-
+		year(S1, Year1),
+		year(S2, Year2),
+		Year1 &gt; Year2.
+</pre></p>
+</blockquote>
+<table border=1>
+<tr>
+<td valign="top">
+<pre>
+?- <font color=green><i>trace.</i></font>
+true.
+[trace] ?- <font color=green><i>more_advanced(henry, fred).</i></font>
+  Call: more_advanced(henry, fred) ? <font color=red>*</font>
+  Call: year(henry, _L205) ?
+  Exit: year(henry, 4) ?
+  Call: year(fred, _L206) ?
+  Exit: year(fred, 1) ?
+^ Call: 4>1 ?
+^ Exit: 4>1 ?
+  Exit: more_advanced(henry, fred) ?
+true.
+[debug]  ?- <font color=green><i>notrace.</i></font></pre>
+<td valign="top">
+<pre>
+
+
+
+bind S1 to henry, S2 to fred
+test 1st goal in body of rule
+succeeds, binds Year1 to 4
+test 2nd goal in body of rule
+succeeds, binds Year2 to 1
+test 3rd goal: Year1 &gt; Year2
+succeeds
+succeeds
+</pre>
+</tr>
+</table>
+<font color=red>*</font> The <code>?</code> is a prompt.
+Press the return key at end of each line of tracing.
+Prolog will echo the &lt;return&gt; as <code>creep</code>, and then print
+the next line of tracing. The "creep"s have been removed in the table above,
+to reduce clutter.
+
+<a name="More">
+<hr>
+<!-- INDEX More? -->
+<h3><code>true.</code>, <code>false.</code>, or <code>true</code></h3>
+
+
+<ul>
+<p><li> Sometimes, Prolog says <code>true </code> instead of
+     <code>true.</code> (i.e. no full-stop after <code>true</code>).
+</p>
+<p><li> Prolog does this when it believes it may be able to prove
+     that the query is true in more than one way (and there are no
+     variables in the query, that it can report bindings for).</p>
+<p><li>Example: suppose we have the following facts and rule:
+<pre>
+bad_dog(fido).
+bad_dog(Dog) :-
+   bites(Dog, Person),
+   is_person(Person),
+   is_dog(Dog).
+
+bites(fido, postman).
+is_person(postman).
+is_dog(fido).
+</pre>
+There are two ways to prove <code>bad_dog(fido)</code>: (a) it's there
+as a fact; and (b) it can be proven using the <code>bad_dog</code> rule:
+<pre>
+?- <font color=green><i>bad_dog(fido).</i></font>
+true <font color=green><i>;</i></font>
+true.
+</pre>
+The missing full-stop prompts us to type
+<code>;</code> if we want to check for another proof. The <code>true.</code>
+that follows means that a second proof <i>was</i> found. Alternatively,
+we can just press the "return" key if we are not interested in whether
+there is another proof.
+</p>
+
+<p><li>You can find more details by looking up
+     <a href="http://www.cse.unsw.edu.au/~billw/prologdict.html#More">true. vs true</a>
+     in the
+     <a href="http://www.cse.unsw.edu.au/~billw/prologdict.html">Prolog dictionary</a>.
+</p>
+</ul>
+
+<a name="structures">
+<hr>
+<!-- INDEX Structures -->
+<h3>Structures</h3>
+
+<p>
+<table border=1 width="100%">
+<tr><td width="20%"><b>Reference:</b><td><center>Bratko chapter 2</tr>
+</table></p>
+
+<ul>
+<p><li>Functional terms can be used to construct complex data structures.</p>
+
+<p><li>If we want to say that John owns the novel Tehanu, we can write: 
+
+ 	owns(john, 'Tehanu').
+</p>
+<p><li>Often objects have a number of attributes: 
+
+ 	owns(john, book('Tehanu', leguin)).
+</p>
+<p><li>The author LeGuin has attributes too:
+
+ 	owns(john, book('Tehanu',
+	           author (leguin, ursula))).
+</p>
+<p><li>The arity of a term is the number of arguments it takes.</p>
+
+<p><li>all versions of <code>owns</code> have arity 2, but the detailed
+   structure of the arguments changes.</p>
+
+<p><li><code>gives(john, book, mary).</code> is a term with arity 3.</p>
+</ul>
+
+<hr>
+<!-- INDEX Asking Questions with Structures -->
+<h3>Asking Questions with Structures</h3>
+
+<ul>
+<p><li>How do we ask, "What books does John own that were written
+   by someone called LeGuin"?
+
+<pre>
+?- <i><font color=green>owns(john, book(Title, author(leguin, GivenName))).</font></i>
+Title = 'Tehanu'
+GivenName = ursula
+</pre></p>
+
+<p><li>What books does John own?
+<pre>
+?- <i><font color=green>owns(john, Book).</font></i>
+Book = book('Tehanu', author(leguin, ursula))
+</pre></p>
+
+<p><li>What books does John own?
+<pre>
+?- <i><font color=green>owns(john, book(Title, Author)).</font></i>
+Title = 'Tehanu'
+Author = author(leguin, ursula)
+</pre></p>
+
+<p><li>Prolog performs a complex matching operation between the
+structures in the query and those in the clause head.</p>
+</ul>
+
+<hr>
+<!-- INDEX Library Database Example -->
+<h3>Library Database Example</h3>
+
+<ul>
+<p><li>A database of books in a library contains facts of the form
+
+<pre>
+book(CatalogNo, Title, author(Family, Given)).
+libmember(MemberNo, name(Family, Given), Address).
+loan(CatalogNo, MemberNo, BorrowDate, DueDate).
+</pre></p>
+
+<p><li>A member of the library may borrow a book.</p>
+
+<p><li>A "loan" records:</p
+
+<p>
+  <ul>
+  <li>the catalogue number of the book
+  <li>the number of the member
+  <li>the date on which the book was borrowed
+  <li>the due date
+  </ul>
+</p>
+</ul>
+
+<hr>
+<!-- INDEX Library Database Example 2 -->
+<h3>Library Database Example 2</h3>
+
+<ul>
+<p><li>Dates are stored as structures:<br>
+	  <code>date(Year, Month, Day)</code></p>
+
+<p><li>e.g. <code>date(2015, 6, 16)</code> represents 16 June 2015.</p>
+
+<p><li>which books has a member borrowed?
+
+<pre>
+borrowed(MemFamily, Title, CatalogNo) :-
+   libmember(MemberNo, name(MemFamily, _), _),
+   loan(CatalogNo, MemberNo, _, _),
+   book(CatalogNo, Title, _).
+</pre></p>
+
+<p><li> The underscore or "don't care" variables (<code>_</code>)
+   are used because for the purpose of this query we don't care
+   about the values in some parts of these structures.</p>
+</ul>
+
+
+<hr>
+<!-- INDEX Comparing Two Terms -->
+<h3>Comparing Two Terms</h3>
+
+<ul>
+<p><li>we would like to know which books are overdue;
+      how do we compare dates?</p>
+
+<pre>
+%later(Date1, Date2) if Date1 is after Date2:
+
+later(date(Y, M, Day1), date(Y, M, Day2)) :-
+	Day1 > Day2.
+later(date(Y, Month1, _), date(Y, Month2, _)) :-
+	Month1 > Month2.
+later(date(Year1, _, _), date(Year2, _, _)) :-
+	Year1 > Year2.
+</pre></p>
+
+<p><li>This rule has three clauses: in any given case, only one clause
+   is appropriate.  They are tried in the given order. </p>
+
+<p><li>This is how disjunction (<b>or</b>) is often achieved in
+   Prolog. In effect, we are saying that the first date is later than
+   the second date if <code>Day1 > Day2</code> and the <code>Y</code>
+   and <code>M</code> are the same, <b>or</b> if the <code>Y</code>
+   is the same and <code>Month1 > Month2</code>, <b>or</b> if
+   <code>Year1 > Year2</code>.
+
+<p><li><i>Footnote</i>: if the year and month are the same, then the
+   heads of all three rules match, and so, while the first rule
+   is the appropriate one, all three will be tried in the course
+   of backtracking. However, the condition "Month1 > Month2" in
+   the second rule means that it will fail in this case, and
+   similarly for the third rule.
+</p>
+</ul>
+
+<hr>
+<!-- INDEX More on Comparisons -->
+<h3>More on Comparisons</h3>
+
+<ul>
+<p><li>In the code for <code>later</code>, again we are using the
+comparison operator "&gt;"</p>
+
+<p><li>More complex arithmetic expressions can be arguments of
+   comparison operators<br>
+   - e.g. <code>X + Y >= Z * W * 2</code>.</p>
+
+<p><li>The available <i>numeric</i> comparison operators are:
+<div align="center">
+<table border=1>
+<tr><th>Operator<th>Meaning<th>Syntax</tr>
+<tr><td align="center"><code>&gt;<td>greater than<td><code>Expression1 &gt; Expression2</tr>
+<tr><td align="center"><code>&lt;<td>less than<td><code>Expression1 &lt; Expression2</tr>
+<tr><td align="center"><code>&gt;=<td>greater than or equal to<td><code>Expression1 &gt;= Expression2</tr>
+<tr><td align="center"><code>=&lt;<td>less than or equal to<td><code>Expression1 =&lt; Expression2</tr>
+<tr><td align="center"><code>=:=<td>equal to<td><code>Expression1 =:= Expression2</tr>
+<tr><td align="center"><code>=\=<td>not equal to<td><code>Expression1 =\= Expression2</tr>
+</table>
+</div>
+</p>
+<p><li>All these numerical comparison operators evaluate both their arguments. That is, they evaluate <code>Expression1</code> and <code>Expression2</code>.
+</p>
+</ul>
+
+<hr>
+<!-- INDEX Overdue Books -->
+<h3>Overdue Books</h3>
+
+<p>
+<pre>
+% overdue(Today, Title, CatalogNo, MemFamily):
+%   given the date Today, produces the Title, CatalogNo,
+%   and MemFamily of all overdue books.
+
+overdue(Today, Title, CatalogNo, MemFamily) :-
+  loan(CatalogNo, MemberNo, _, DueDate),
+  later(Today, DueDate),
+  book(CatalogNo, Title, _),
+  libmember(MemberNo, name(MemFamily, _), _).
+</pre></p>
+
+
+
+<hr>
+<!-- INDEX Due Date -->
+<h3>Due Date</h3>
+
+<ul>
+<p><li>Assume the loan period is one month:
+
+<pre>
+due_date(date(Y, Month1, D),
+         date(Y, Month2, D)) :-
+           Month1 < 12,
+	   Month2 <font color=green>is</font> Month1 + 1.
+
+due_date(date(Year1, 12, D),
+         date(Year2, 1, D)) :-
+           Year2 <font color=green>is</font> Year1 + 1.
+</pre>
+</ul>
+You can find a copy of the code for all the library stuff, and
+a sample (toy) library database, as
+<a href="./library.pro">library.pro</a>
+
+<hr>
+<!-- INDEX The is operator -->
+<h3>The <code>is</code> operator</h3>
+
+<ul>
+<p><li>The right hand argument of <code>is</code> must be an
+   arithmetic expression that
+   can be evaluated right now (no unbound variables).</p>
+<p><li>This expression is evaluated and bound to the left hand argument.</p>
+<p><li><code>is</code> is <font color=red>not</font>
+       a C-style assignment statement:</p>
+  <p><ul>
+  <li><code>X is X + 1</code> won't work!
+  <li>except via backtracking, variables can only be bound once,
+     using <code>is</code> or any other way
+  </ul></p>
+<p><li><code>=</code> does <font color=red>not</font> cause evaluation of
+     its arguments:
+   <table border=0>
+   <tr><td><pre>?- <i><font color=green>X = 2, Y = X + 1.</font></i>
+X = 2
+Y = 2+1</pre>
+   </td>
+   <td><code>&nbsp;&nbsp;&nbsp;</code></td>
+   <td><pre>?- <i><font color=green>X = 2, Y is X + 1.</font></i>
+X = 2
+Y = 3</pre>
+   </td>
+   </tr>
+   </table></p>
+<p><li>Use <code>is</code> if and only if you need to evaluate something:
+    <table border=0>
+    <tr><td><code>X is 1</code><td>&nbsp;<td><font color=red>BAD!</font>
+        <td> - nothing to evaluate</tr>
+    <tr><td><code>X = 1</code><td>&nbsp;<td><font color=green>GOOD!</font>
+        <td>&nbsp;</tr>
+    </table></p>
+<p><li><font color=red>To reinforce the point about the meaning of <code>is</code>, you
+    will be penalised in the first Prolog assignment if you use it where
+    it is not needed.</font>
+</ul>
+
+<hr>
+<!-- INDEX Order of goals with <code>is</code> -->
+<h3>Order of goals with <code>is</code></h3>
+
+<ul>
+<p><li> Order of goals matters with <code>is</code>.</p>
+
+	<p>Variables on the RHS of <code>is</code>
+	<i>must</i> be instantiated at the time the <code>is</code> goal
+	is tried by Prolog. This is why the following example fails:
+<pre>
+?- X is Y + 1, Y = 3.
+ERROR: is/2: Arguments are not sufficiently instantiated
+</pre>
+vs
+<pre>
+?- Y = 3, X is Y + 1.
+Y = 3,
+X = 4.
+</pre>
+</p>
+</ul>
+
+<hr>
+<!-- INDEX <code>is</code>, <code>=</code> and <code>=:=</code>-->
+<h3><code>is</code>, <code>=</code> and <code>=:=</code></h3>
+
+<ul>
+<p><li>You can see the differences between these three Prolog constructs from
+   the following example Prolog queries:</p>
+<table border=1>
+<tr><td><code>?- X =:= 3+2.<br>
+ERROR: =:=/2: Arguments are<br>&nbsp;not sufficiently instantiated&nbsp;&nbsp;
+<td><code>X</code> is not currently bound, so can't be evaluated.
+</tr>
+<td><code>?- X = 3+2.<br>
+X = 3+2.
+<td><code>=</code> doesn't evaluate, so <code>X</code> is bound to <code>3+2</code>.
+</tr>
+<tr><td><code>?- X is 3+2.<br>
+X = 5.
+<td><code>is</code> <i>does</i> evaluate its right-hand side.
+</tr>
+<tr><td><code>?- 4+1 is 3+2.<br>
+false.
+<td><code>3+2</code> is evaluated to <code>5</code>.<br><code>4+1</code> is not evaluated. So <code>4+1</code> is different from <code>5</code>.
+</tr>
+<tr><td><code>?- 4+1=3+2.<br>
+false.
+<td>Neither side is evaluated by <code>=</code>.<br>The two expressions are different.
+</tr>
+<tr><td><code>?- 4+1 =:= 3+2.<br>
+true.
+<td>Both sides are evaluated by <code>=:=</code>
+</tr>
+</table>
+</pre>
+<p><li><code>=</code> is used for matching, so a more appropriate use would be:<br><pre>?- likes(mary, X) = likes(Y, pizza).
+X = pizza,
+Y = mary.</pre>
+</p>
+</ul>
+
+
+<a name="recursion">
+<center>
+<hr>
+<!-- INDEX Recursive Programs -->
+<h3>Recursive Programs</h3>
+</center>
+
+<table border=1 width="100%">
+<tr><td width="20%"><b>Reference:</b><td><center>Bratko section 1.3 (doesn't cover trees, though)</tr>
+</table>
+
+<h3>Binary Trees</h3>
+
+<ul>
+<p><li> In the library database example, some complex terms contained
+   other terms, for example, <code>book</code> contained <code>name</code>.</p>
+
+<p><li>The following term also contains another term, this time one
+   similar to itself:
+
+<pre>
+tree(tree(L1, jack, R1), fred, tree(L2, jill, R2))
+</pre></p>
+
+<p><li>The variables L1, L2, R1, and R2 should be bound to sub-trees
+    (this will be clarified shortly).</p>
+
+<p><li>A structure like this could be used to represent a "binary tree"
+   that looks like:</p>
+
+<p>
+<center>
+<img src="tree1.jpg" alt="Tree with root node labelled labelled fred, left child jack, right child jill, jack has left and right subtrees L1 and R1, and jill has left and right subtrees L2 and R2">
+</center>
+
+<p><li>Binary because each "node" has two branches (our backtrack tree
+   before had many branches at some nodes)</p>
+</ul>
+
+<hr>
+<!-- INDEX Recursive Structures -->
+<h3>Recursive Structures</h3>
+
+<ul>
+<p><li>A term that contains another term that has the same principal
+   functor (in this case <code>tree</code>) is said to be recursive.</p>
+
+<p><li>Biological trees have leaves. For us, a <i>leaf</i> is a node with two empty branches:</p>
+<p>
+<center>
+<img src="tree2.jpg"
+     alt="Tree with root node labelled labelled fred, left child jack, right child jill,
+          and each of jack and jill have left and right nodes labelled empty">
+</center>
+</p>
+<p><li><code>empty</code> is an arbitrary symbol to represent the empty
+   tree. In full, the tree above would be:<br>
+   <pre>tree(tree(empty, jack, empty), fred, tree(empty, jill, empty))</pre>
+</p>
+
+<p><li>Usually, we wouldn't bother to draw the <code>empty</code> nodes:<br>
+<div align="center"><img src="tree2a.png" alt="Tree without empty nodes shown"></div>
+</p>
+</ul>
+
+<hr>
+<!-- INDEX Another tree example -->
+<h3>Another Tree Example</h3>
+
+<ul>
+<p><li>
+<pre>tree(tree(empty, 7, empty),
+     '+',
+     tree(tree(empty, 5, empty),
+          '-',
+          tree(empty, 3, empty)))</pre>
+<div align="center"><img src="tree2b.png"
+     alt="tree with root labelled '+', left leaf labelled 6, right subtree labelled '-',
+          left leaf labelled 5, right leaf labelled 3")</div>
+</p>
+</ul>
+
+<hr>
+<!-- INDEX Recursive Programs for Recursive Structures -->
+<h3>Recursive Programs for Recursive Structures</h3>
+
+<ul>
+<p><li>A binary tree is either empty or contains some data and a left
+   and right subtree that are also binary trees.</p>
+
+<p><li>In Prolog we express this as:
+
+<table>
+<tr><td><code>is_tree(empty).</code><td>&nbsp;&nbsp;&nbsp;trivial branch</tr>
+<tr><td><code>is_tree(tree(Left, Data, Right)) :-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_tree(Left),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;some_data(Data),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is_tree(Right).</code><td valign="top">
+&nbsp;&nbsp;&nbsp;recursive branch</tr>
+</table>
+</p>
+
+<p><li>A non-empty tree is represented by a 3-arity term.</p>
+
+<p><li>Any recursive predicate must have:
+   <ul>
+   <li>(at least) one <b>recursive branch/rule</b> (or it isn't
+       recursive :-) ) and
+   <li>(at least) one non-recursive or <b>trivial branch</b>
+       (to stop the recursion going on for ever).
+   </ul>
+   <font size=-1>The example at the heading "An Application of Lists",
+   below, will show how the recursive branch and the trivial branch
+   work together. However, you probably shouldn't try to look at it
+   until we have studied lists.</font>
+</ul>
+
+
+<hr>
+<!-- INDEX Recursive Programs for Recursive Structures 2 -->
+<h3>Recursive Programs for Recursive Structures 2</h3>
+
+<ul>
+<p><li>Let us define (or measure) the size of tree (i.e. number of nodes):
+
+<img align="right" alt="tree size = number of nodes" src="tree3.gif">
+<pre>
+tree_size(empty, 0).
+tree_size(tree(L, _, R), Total_Size) :-
+	tree_size(L, Left_Size),
+	tree_size(R, Right_Size),
+	Total_Size is
+        Left_Size + Right_Size + 1.
+</pre></p>
+
+<p><li>The size of an empty tree is zero.</p>
+
+<p><li>The size of a non-empty tree is the size of the left sub-tree
+   plus the size of the right sub-tree plus one for the current tree node.</p>
+
+<p><li>The data does not contribute to the total size of the tree.</p>
+
+<p><li>Recursive data structures need recursive programs.
+   A recursive program
+   is one that refers to itself, thus, <code>tree_size</code>
+   contains goals that call for the <code>tree_size</code> of
+   smaller trees.</p>
+</ul>
+
+<a name="lists">
+<hr>
+<!-- INDEX Lists -->
+<h3>Lists</h3>
+
+<table border=1 width="100%">
+<tr><td width="20%"><b>Reference:</b><td><center>Bratko chapter 3</tr>
+</table>
+
+<ul>
+<p><li> A list may be nil (i.e. empty) or it may be a term that has a
+   head and a tail</p>
+
+<p><li>The head may be any term or atom.</p>
+
+<p><li>The tail is another list.</p>
+
+<p><li>We could define lists as follows:
+
+<pre>
+	is_list(nil).
+	is_list(list(Head, Tail)) :-
+		is_list(Tail).
+</pre></p>
+
+<p><li>A list of numbers [1, 2, 3] would look like:
+
+<pre>
+	list(1, list(2, list(3, nil)))
+</pre></p>
+<p><li>This notation is understandable but clumsy. <font color=red>Prolog doesn't
+actually recognise it</font>, and in fact uses <code>.</code> instead of
+<code>list</code> and <code>[]</code> instead of <code>nil</code>.
+So Prolog would recognise <code>.(1, .(2, .(3, [])))</code> as a list
+of three numbers. This is briefer but still looks strange, and
+is hard to work with.</p>
+
+<p><li>Since lists are used so often, Prolog in fact has a special notation
+       that encloses the list members in square brackets:
+
+<pre>
+	[1, 2, 3] = .(1, .(2, .(3, [])))
+
+?- <i><font color=green>X =  .(1, .(2, .(3, []))).</font></i>
+X = [1, 2, 3]
+</pre>
+</p>
+</ul>
+
+<hr>
+<!-- INDEX List Constructor | -->
+<h3>List Constructor <code>|</code></h3>
+
+<ul>
+<p><li>Within the square brackets <code>[ ]</code>, the symbol
+   <code>|</code> acts as an operator to construct a list from
+   an item and another list.
+</p>
+
+<p><li> <pre>?- <i><font color=green>X = [1 | [2, 3]].</font></i>
+X = [1, 2, 3].</pre>
+</p>
+
+<p><li> <pre>?- <i><font color=green>Head = 1 , Tail = [2, 3], List = [Head | Tail].</font></i>
+List = [1, 2, 3].</pre>
+</p>
+</ul>
+
+<hr>
+<!-- INDEX Examples of Lists -->
+<h3>Examples of Lists and Pattern Matching</h3>
+
+
+<table border=0>
+<tr><td valign="top"><code>?- <i><font color=green>[X, Y, Z] = [1, 2, 3].</font></i></code>
+<td>Match the terms on either side of
+<code>=</code></tr>
+<tr><td><code>X = 1</code></tr>
+<tr><td><code>Y = 2</code></tr>
+<tr><td><code>Z = 3</code></tr>
+<tr><td>&nbsp;</tr>
+<tr><td>&nbsp;</tr>
+
+<tr><td><code>?- <i><font color=green>[X | Y] = [1, 2, 3].</font></i></code>
+<td><code>|</code> separates head from tail of list.</tr>
+<tr><td><code>X = 1</code><td>So [First | Rest] is the usual way</tr>
+<tr><td><code>Y = [2, 3]</code><td>of writing .(First, Rest) in Prolog</tr>
+<tr><td>&nbsp;</tr>
+<tr><td>&nbsp;</tr>
+
+<tr><td>
+<pre>?- <i><font color=green>[X | Y] = [1].</font></i>
+X = 1
+Y = []</pre>
+</td>
+<td valign="bottom">The empty list is written as <code>[]</code><br>
+Lists "end" in an empty list!<br>
+Note that <code>[1]</code> is a list with one element.</tr>
+</table>
+
+
+<p>The first several elements of the list can be selected before
+matching the tail:</p>
+
+<table border=0>
+<tr><td valign="top">
+<pre>?- <i><font color=green>[X, Y | Z] = [fred, jim, jill, mary].</font></i>
+X = fred
+Y = jim</code>
+Z = [jill, mary]
+<td valign="top">&nbsp;<br>
+Must be at least two elements<br>
+in the list on the right.
+</tr>
+
+</table>
+
+
+<hr>
+<!-- INDEX More Complex List Matching -->
+<h3>More Complex List Matching</h3>
+ 
+
+<pre>
+?- <i><font color=green>[X | Y] = [[a, f(e)], [n, m, [2]]].</font></i>
+
+X = [a, f(e)]
+Y = [[n, m, [2]]]
+</pre>
+
+<p>Notice that <code>Y</code> is shown with an extra pair of brackets:
+<code>Y</code> is the tail of the entire list:
+<code>[n, m, [2]]</code> is the sole element of <code>Y</code>.</p>
+
+<hr>
+<!-- INDEX List Membership -->
+<h3>List Membership</h3>
+
+<ul>
+<p><li>A term is a member of a list if
+
+  <ul>
+  <p><li>the term is the same as the head of the list, or
+  <p><li>the term is a member of the tail of the list.
+  </ul>
+
+<p><li>In Prolog:
+
+<table border=0>
+<tr><td><code>member(X, [X | _]).
+<td>&nbsp;&nbsp;
+<td>trivial branch:<br>a rule with a head but no body</tr>
+<tr><td>&nbsp;</tr>
+
+<tr><td><code>member(X, [_ | Y]) :-<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;member(X, Y).
+<td>&nbsp;&nbsp;
+<td>recursive branch</tr>
+</table>
+
+<p>
+The first rule has the same effect as: <code>member(X, [Y|_]) :- X = Y.</code>
+<br>
+The form <code>member(X, [X|_]).</code> is preferred, as it avoids the extra
+calculation.
+</p>
+<p><li><code>member</code> is actually predefined in Prolog. It is a
+<font color=blue>built-in predicate</font>. There are quite a few built-in
+predicates in Prolog. We do not have the time to find out about most of them
+in COMP9414. Look at the <a href="ext-prolog.html">COMP9814 Prolog Extension
+notes</a> if you want to get an idea about some of the built-in predicates.
+"Pre-defined" means that you do not need to put the rules for
+<code>member</code> into your code - Prolog already knows the definition
+of <code>member</code>. <i>Do not re-define predefined predicates.</i></p>
+
+</ul>
+
+<hr>
+<!-- INDEX "=" in goals -->
+<h3><code>=</code> in goals</h3>
+<p>
+Earlier, we said:
+<blockquote>
+<code>X = 1</code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<td><font color=green>GOOD!</font>
+</blockquote>
+Actually, goals with <code>=</code> in them are mostly avoidable and <i>should</i>
+be avoided. Beginnner Prolog programmers are tempted to use <code>=</code>
+frequently, to tie together variables that they now realise should be the same:
+<pre>
+% length(List, LengthOfList)
+% binds LengthOfList to the number of elements in List.
+length([], Length) :-
+	Length = 0.
+length([First | Rest], Length) :-
+	length(Rest, LengthOfRest),
+	Length is LengthOfRest + 1.
+</pre>
+This works, but involves an unnecessary unification. It is better for the
+base case to be
+<pre>
+length([], 0).
+</pre>
+In effect, we take the original version of the base case, and
+replace <code>Length</code>, in the head of the rule, with the
+thing that <code>Length</code> is <code>=</code> to. Programmers
+who fail to do this are usually still thinking procedurally.
+</p>
+
+<hr>
+<!-- INDEX Programming Principles for Recursive Structures -->
+<h3>Programming Principles for Recursive Structures</h3>
+
+<ul>
+<p><li>Only deal with one element at a time.</p>
+
+
+<p><li>Believe that the recursive program you are writing has already
+   been written.</p>
+
+<p>In the definition of <code>member</code>, we are already assuming that
+   we know how to find a member in the tail.</p>
+
+<p><li>Write definitions, not programs!</p>
+
+   <ul>
+
+   <p><li>If you are used to writing programs for conventional languages,
+      then you are used to giving instructions on how to perform
+      certain operations.</p>
+
+   <p><li>In Prolog, you define relationships between objects and let
+      the system do its best to construct objects that satisfy the
+      given relationship.</p>
+   </ul>
+
+</ul>
+
+
+<hr>
+<!-- INDEX Concatenating Two Lists -->
+<h3>Concatenating Two Lists</h3>
+
+<ul>
+<p><li>Suppose we want to take two lists, like
+   <code>[1, 3]</code> and <code>[5, 2]</code> and
+   concatenate them to make <code>[1, 3, 5, 2]</code>
+
+<p><li>The header comment is:
+<pre>
+% concat(List1, List2, Concat_List1_List2)
+% Concat_List1_List2 is the concatenation of List1 &amp; List2
+</pre>
+There are two rules:
+
+<p><li>First, the trivial branch:
+<pre>concat([], List2, List2).</pre>
+
+<p><li>Next, the recursive branch:
+<pre>
+concat([<font color=purple>Item</font> | <font color=green>Tail1</font>], <font color=red>List2</font>, [<font color=purple>Item</font> | <font color=blue>Concat_Tail1_List2</font>]) :-
+      concat(<font color=green>Tail1</font>, <font color=red>List2</font>, <font color=blue>Concat_Tail1_List2</font>).
+</pre></p>
+
+<p><li>For example, consider<br><code>?- concat([1], [2], [1, 2]).</code><br>
+	By the recursive branch:
+
+<pre>
+concat([<font color=purple>1</font> | <font color=green>[]</font>], <font color=red>[2]</font>, [<font color=purple>1</font> | <font color=blue>[2]</font>]) :-
+      concat(<font color=green>[]</font>, <font color=red>[2]</font>, <font color=blue>[2]</font>).
+</pre>
+
+	and <code>concat([], [2], [2])</code> holds because of the trivial branch.
+</p>
+
+<p><li>The entire program is:
+
+<pre>
+% concat(List1, List2, Concat_List1_List2):
+%   Concat_List1_List2 is the concatenation of List1 &amp; List2
+concat([], List2, List2).
+concat([Item | Tail1], List2, [Item | Concat_Tail1_List2]) :-
+      concat(Tail1, List2, Concat_Tail1_List2).
+</pre></p>
+</ul>
+
+<hr>
+<!-- INDEX An Application of Lists -->
+<h3>An Application of Lists</h3>
+
+<ul>
+<p><li>Find the total cost of a list of items:</p>
+
+Cost data:
+<pre>
+cost(cornflakes, 230).
+cost(cocacola, 210).
+cost(chocolate, 250).
+cost(crisps, 190).
+</pre>
+
+<p><li> Rules:</p>
+<pre>
+total_cost([], 0).                % trivial branch
+total_cost([Item|Rest], Cost) :-  % recursive branch
+    cost(Item, ItemCost),
+    total_cost(Rest, CostOfRest),
+    Cost is ItemCost + CostOfRest.
+</pre>
+
+<p><li>
+Sample query:
+<pre>
+?- <i><font color=green>total_cost([cornflakes, crisps], X).</font></i>
+
+X = 420
+</pre>
+</ul>
+
+<hr>
+<!-- INDEX Tracing total_cost -->
+<h3>Tracing <code>total_cost</code></h3>
+
+<pre>
+?- <i><font color=green>trace.</font></i>
+
+true.
+[trace]  ?- <i><font color=green>total_cost([cornflakes, crisps], X).</font></i>
+   Call: (7) total_cost([cornflakes, crisps], _G290) ? creep
+   Call: (8) cost(cornflakes, _L207) ? creep
+   Exit: (8) cost(cornflakes, 230) ? creep
+   Call: (8) total_cost([crisps], _L208) ? creep
+   Call: (9) cost(crisps, _L228) ? creep
+   Exit: (9) cost(crisps, 190) ? creep
+   Call: (9) total_cost([], _L229) ? creep
+   Exit: (9) total_cost([], 0) ? creep
+^  Call: (9) _L208 is 190+0 ? creep
+^  Exit: (9) 190 is 190+0 ? creep
+   Exit: (8) total_cost([crisps], 190) ? creep
+^  Call: (8) _G290 is 230+190 ? creep
+^  Exit: (8) 420 is 230+190 ? creep
+   Exit: (7) total_cost([cornflakes, crisps], 420) ? creep
+
+X = 420 
+
+[debug]  ?- <i><font color=green>notrace.</font></i>
+</pre>
+
+<hr>
+<!-- INDEX Modifying total_cost -->
+<h3>Modifying <code>total_cost</code></h3>
+
+<p>
+This is an <i>optional</i> homework exercise.<br>
+What happens if we change the
+recursive branch rule for <code>total_cost</code> as shown below?
+</p>
+
+<pre>
+total_cost([Item|Rest], Cost) :-
+    total_cost(Rest, CostOfRest),
+    cost(Item, ItemCost),
+    Cost is ItemCost + CostOfRest.
+</pre>
+
+<p>
+The second and third lines have been swapped around.<br>
+You'll find that the rule still works. Try tracing the new
+version of this rule, work out what happens differently.<br>
+Which version do you find easier to understand? Why do think
+this is the case?
+</p>
+
+<hr>
+<!-- INDEX Another list-processing template-->
+<h3>Another list-processing procedure</h3>
+
+<ul>
+<p><li> The next procedure removes duplicates from a list.</p>
+<p><li>It has <i>three rules</i>. This is an example of a common
+   list-processing <i>template</i>.</p>
+<p><li>Algorithm:
+   <ul>
+   <li> If the list is empty, there's nothing to do.
+   <li> If the first item of the list is a member of the rest of the list,
+        then discard it, and remove duplicates from the rest of the list.
+   <li> Otherwise, keep the first item, and again, remove any duplicates
+        from the rest of the list.
+   </ul>
+</p>
+<p><li>
+<pre>
+% remove_dups(+List, -NewList):
+%  New List isbound to List, but with duplicate items removed.
+remove_dups([], []).
+remove_dups([First | Rest], NewRest) :-
+    member(First, Rest),
+    remove_dups(Rest, NewRest).
+remove_dups([First | Rest], [First | NewRest]) :-
+    not(member(First, Rest)),
+    remove_dups(Rest, NewRest).
+</pre>
+
+<p><li>
+<pre>
+?- <font color=green><i>remove_dups([1,2,3,1,3,4], X).</i></font>
+
+X = [2, 1, 3, 4] <font color=green><i>;</i></font>
+
+false.
+</pre>
+</p>
+<p><li> Note the use of <code>not</code> to negate a condition.
+  An alternative to <code>not</code> is <code>\+</code>. See the
+  article on
+  <a href="http://www.cse.unsw.edu.au/~billw/prologdict.html#negation">negation</a>
+  in the
+  <a href="http://www.cse.unsw.edu.au/~billw/prologdict.html">Prolog dictionary</a>
+  to find out why there are two names for <code>not</code>.
+</ul>
+
+<hr>
+<a name="singleton">
+<!-- INDEX Singleton Variables -->
+<h3>Singleton Variables</h3>
+
+<ul>
+<p><li> If Prolog finds a variable name that you only use once in a rule,
+   it assumes that it may be a spelling mistake, and issues a <b>Warning</b>
+   about a "singleton variable" when you load the code:
+
+   <pre>% <font color=green><i>prolog -q -s mycode.pl</i></font>
+Warning: .../mycode.pl:4:
+   Singleton variables: [Item]</pre>
+
+   The <code>-</code>q means "quiet" - i.e. don't print the SWI Prolog
+   welcome message. This way, any warnings are easier to notice.
+</p>
+
+<p><li>Here is the code that produced this (with line numbers added):</p>
+<pre> 1 % count(Item, List, Count) counts the number of times the
+ 2 % Item occurs in the List, and binds Count to that number.
+ 3
+ 4 count(Item, [], 0).
+ 5 count(Item, [Item | Rest], Count) :-
+ 6     count(Item, Rest, RestCount),
+ 7     Count is RestCount + 1.
+ 8 count(Item, [Other | Rest], Count) :-
+ 9     not(Item = Other),
+10     count(Item, Rest, Count).</pre>
+
+<p><li>To suppress the warning, put an <code>_</code> in front of the
+   word <code>Item</code> on line 4 (only). This makes it "don't care"
+   variable. Check for the possible spelling error, first!
+<pre> 4 count(_Item, [], 0).
+</pre>
+</p>
+
+<p>
+See also the <a href="http://www.cse.unsw.edu.au/~billw/prologdict.html#singleton">entry on
+singleton variables</a> in the <a href="http://www.cse.unsw.edu.au/~billw/prologdict.html">Prolog dictionary</a>.
+</p>
+   
+</ul>
+
+
+<a name="cut">
+<hr>
+<!-- INDEX Controlling Execution -->
+<h3 align="center">Controlling Execution</h3>
+
+<table border=1 width="100%">
+<tr><td width="20%"><b>Reference:</b><td><center>Bratko chapter 5</tr>
+</table>
+
+<h3>The Cut Operator (!)</h3>
+
+<ul>
+<p><li>Sometimes we need a way to prevent Prolog finding all solutions,
+   i.e. a way to stop backtracking.</p>
+
+<p><li>The cut operator, written <code>!</code>, is a built-in goal that prevents backtracking.</p>
+
+<p><li>It turns Prolog from a nice declarative language into a hybrid monster.</p>
+
+<p><li>Use cuts sparingly and with a sense of having
+<font color=purple>sinned</font>.</p>
+</ul>
+
+<hr>
+<!-- INDEX Cut Operator 2 -->
+<h3>Cut Operator 2</h3>
+<p>Recall this example:</p>
+
+<p><center>
+<img src="backtrack.gif">
+</center></p>
+
+<hr>
+<!-- INDEX Cut Prunes the Search Tree -->
+<h3>Cut Prunes the Search Tree</h3>
+
+<ul>
+<p><li>If the goal(s) to the right of the cut fail then the entire clause fails and the the goal that caused this clause to be invoked fails.
+</p>
+
+<p>
+<center>
+<img src="backtrackwithcut.gif">
+</center>
+</p>
+
+<p><li>	In particular, alternatives for Course are not explored.</p>
+</ul>
+
+<hr>
+<!-- INDEX Cut Prunes the Search Tree 2 -->
+<h3>Cut Prunes the Search Tree 2</h3>
+
+<ul>
+<p><li>	Another example: using the <code>facts03</code> database, try
+
+<pre>
+?- <i><font color=green>lectures(codd, X).</font></i>
+X = 9311 <i><font color=green>;</font></i>
+X = 9314.
+
+?- <i><font color=green>lectures(codd, X), ! .</font></i>
+X = 9311.
+</pre></p>
+
+<p><li>	The cut in the second version of the query prevents Prolog
+   from backtracking to find the second solution.</p>
+</ul>
+
+
+<hr>
+<!-- INDEX Using cuts in later to improve efficiency -->
+<h3>Using cuts in <code>later</code> to improve efficiency</h3>
+
+<p>
+Recall the code for <code>later</code>:
+<pre>
+later(date(Y, M, D1), date(Y, M, D2)) :- D1 > D2.
+later(date(Y, M1, _), date(Y, M2, _)) :- M1 > M2.
+later(date(Y1, _, _), date(Y2, _, _)) :- Y1 > Y2.
+</pre>
+We note that if year and month are the same, all three rules
+are tried while backtracking. This could be prevented by adding cuts:
+<pre>
+later(date(Y, M, D1), date(Y, M, D2)) :- D1 > D2, <font color=brown>!</font>.
+later(date(Y, M1, _), date(Y, M2, _)) :- M1 > M2, <font color=brown>!</font>.
+later(date(Y1, _, _), date(Y2, _, _)) :- Y1 > Y2.
+</pre>
+This would increase efficiency by eliminating unnecessary backtracking,
+though it is doubtful if it would be worth bothering about, unless
+you actually have code that is running too slowly. In that case you
+should first do an analysis of where the time is being spent, before
+putting in cuts everywhere!
+</p>
+<p>In other cases, adding cuts of this sort to multi-rule procedures
+might be a useful (if lazy) way of ensuring that only one rule is
+used in a particular case. Unless it makes the code very clumsy, it
+is better to use and rely on "condition" goals in each rule (like
+<code>M1 > M2</code> in the second rule for <code>later</code>) to
+specify the case in which it is appropriate. More examples of this
+are below.
+</p>
+
+<hr>
+<!-- INDEX Efficiency 2 -->
+<h3>Another cut example</h3>
+<ul>
+<p><li><code>max</code>, without cut:
+<pre>% max(A, B, C) binds C to the larger of A and B.
+max(A, B, A) :-
+   A > B.
+max(A, B, B) :-
+   A <font color=green>=&lt;</font> B.</pre>
+</p>
+
+<p><li><code>max</code>, with cut:
+<pre>max(A, B, A) :-
+   A > B,
+   <font color=red>!</font>.
+max(A, B, B).</pre>
+</p>
+
+<p><li>The first version has a negated test in the second rule
+   (<code><font color=green>=&lt;</font></code> vs <code>&gt;</code>).
+   The second version substitutes a cut in the first rule for
+   the negated test.</p>
+
+<p><li><font color=red>Remember, no cuts in the first assignment unless they are essential!</font> Hint: the first assignment can be done without cuts.
+</p>
+</ul>
+
+<hr>
+<!-- INDEX Efficiency 3 -->
+<h3>Another cut example 2</h3>
+
+<ul>
+<p><li><code>remove_dups</code>, without cut:
+<pre>remove_dups([], []).
+remove_dups([First | Rest], NewRest) :-
+    member(First, Rest),
+    remove_dups(Rest, NewRest).
+remove_dups([First | Rest], [First | NewRest]) :-
+    <font color=green>not(member(First, Rest))</font>,
+    remove_dups(Rest, NewRest).</pre>
+</p>
+<p><li><code>remove_dups</code>, with cut:
+<pre>remove_dups([], []).
+remove_dups([First | Rest], NewRest) :-
+    member(First, Rest),
+    <font color=red>!</font>,
+    remove_dups(Rest, NewRest).
+remove_dups([First | Rest], [First | NewRest]) :-
+    remove_dups(Rest, NewRest).</pre>
+</p>
+
+<p><li>The first version has a negated test in the third rule
+   (<code><font color=green>not(member(First, Rest))</font></code>).
+   The second version substitutes a cut in the second rule for
+   the negated test in the third rule.</p>
+</ul>
+
+
+<hr>
+
+<table width="100%" border=2>
+<tr><td><b>Summary:</b> Introduction to Prolog</tr>
+<tr><td>
+We have introduced facts, queries, variables, conjunctions
+of goals, rules, structures, recursion, trees and lists, and controlling
+execution by means of the "cut".
+</tr>
+</table>
+<p>
+<hr>
+CRICOS Provider Code No. 00098G
+<br>
+ <script
+  type="text/JavaScript"
+  language="JavaScript">
+<!--
+// Original code from http://www.chami.com/tips/Internet/041198I.html
+// Accessed 17 April 2008
+// Modified by Bill Wilson to report 4-digit years and full month names
+// format date as dd month yyyy
+// example: 12 January 2015
+function date_ddmonthyyyy(date)
+{
+  var d = date.getDate();
+  var m = date.getMonth() + 1;
+  var y = date.getYear();
+
+  // handle different year values
+  // returned by IE and NS in
+  // the year 2000.
+  if(y >= 2000)
+  {
+    y -= 2000;
+  }
+  if(y >= 100)
+  {
+    y -= 100;
+  }
+  // will not work correctly for documents last modified in the 1990s
+  y += 2000;
+
+  var month =
+    ( 1==m)?'January':( 2==m)?'February':(3==m)?'March':
+    ( 4==m)?'April':( 5==m)?'May':(6==m)?'June':
+    ( 7==m)?'July':( 8==m)?'August':(9==m)?'September':
+    (10==m)?'October':(11==m)?'November':'December';
+
+  return "" + d + " " + month + " " + y;
+}
+
+function date_lastmodified()
+{
+  var lmd = document.lastModified;
+  var s   = "Unknown";  
+  var d1;
+
+  if(0 != (d1=Date.parse(lmd)))
+  {
+    s = "" + date_ddmonthyyyy(new Date(d1));
+  }
+    
+  return s;
+}
+
+document.write(
+  "Last updated on: " +
+  date_lastmodified() );
+
+// -->
+</script>
+<br>
+Copyright &copy; Bill Wilson, 1996-2012, except where another source is acknowledged:
+much of the material in these notes is based on an earlier edition by
+Claude Sammut. Certain improvements are due to Maurice Pagnucco. Images of Bratko,
+Kowalski, and Colmerauer were obtained from Google Images.
+</body></html>
