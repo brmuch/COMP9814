@@ -37,7 +37,7 @@ paruns([Head|Tail], Result) :- paruns(Tail, Return), add_into_list(Head, Return,
 
 %==========================================================================================================================================
 % question 5 : tree_eval(Value, Tree, Eval)
-tree_eval(_, null, 0) :- !.																																			% base case, when in the leaf of tree
+tree_eval(_, null, 0) :- !.									% base case, when in the leaf of tree
 tree_eval(Value, tree(empty, z, empty), Value) :- !.
 tree_eval(_, tree(empty, Num, empty), Num) :- !.
 
